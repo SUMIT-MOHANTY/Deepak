@@ -1,24 +1,32 @@
 {
   "name": "library-management-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Library Management System Frontend",
+  "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "react-scripts start",
     "dev": "vite",
     "build": "tsc && vite build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
     "react-router-dom": "^6.20.0",
     "axios": "^1.6.0",
     "jwt-decode": "^4.0.0",
     "@types/jwt-decode": "^2.0.1",
     "react-hook-form": "^7.48.0",
     "react-query": "^3.39.0",
-    "zustand": "^4.4.0"
+    "zustand": "^4.4.0",
+    "web-vitals": "^3.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
@@ -27,10 +35,23 @@
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.1.0",
     "eslint": "^8.53.0",
+    "eslint-plugin-react": "^7.32.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
     "typescript": "^5.2.2",
     "vite": "^4.5.0"
   },
-  "proxy": "http://localhost:8000"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://backend:8000"
 }

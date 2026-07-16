@@ -32,7 +32,6 @@ class LoanViewSet(viewsets.ModelViewSet):
         loan = self.get_object()
         if loan.status == 'returned':
             return Response({'error': 'Book already returned'}, status=400)
-        permission_classes = [IsAuthenticated]
 
         loan.return_date = timezone.now()
         loan.status = 'returned'

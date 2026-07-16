@@ -16,6 +16,8 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -32,6 +34,8 @@ static/
 
 # Environment variables
 .env
+.env.*
+!.env.example
 .env.local
 .env.development.local
 .env.test.local
@@ -42,24 +46,28 @@ static/
 *.key
 jwt_secret.txt
 
-# Node.js (for frontend)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Frontend build
-frontend/dist/
-frontend/build/
-frontend/.vite/
+# Virtual environments
+env/
+venv/
+.venv
+ENV/
+env.bak/
+venv.bak/
 
 # IDEs
 .vscode/
+.vscode/*
+!.vscode/extensions.json
 .idea/
+.idea
 *.swp
 *.swo
 *~
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # OS
 .DS_Store
@@ -70,14 +78,84 @@ frontend/.vite/
 ehthumbs.db
 Thumbs.db
 
+# Node.js (for frontend)
+node_modules/
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+jspm_packages/
+
+# Frontend build
+frontend/build/
+frontend/dist/
+frontend/.vite/
+frontend/.npm
+frontend/.eslintcache
+
 # Docker
 .dockerignore
+docker-compose.override.yml
 
 # Testing
 .coverage
-.pytest_cache/
-.tox/
 htmlcov/
+.pytest_cache/
+.cache
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+coverage/
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# celery beat schedule file
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Backup files
+*.bak
+*.backup
+*.tmp
 
 # Logs
 logs/
@@ -88,18 +166,16 @@ yarn-error.log*
 
 # Runtime data
 pids/
+pids
 *.pid
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Dependency directories
-jspm_packages/
-
 # Optional npm cache directory
 .npm
+
+# Optional eslint cache
+.eslintcache
 
 # Optional REPL history
 .node_repl_history
@@ -114,30 +190,31 @@ jspm_packages/
 .cache
 .parcel-cache
 
-# Next.js build output
+# next.js build output
 .next
 
-# Nuxt.js build / generate output
+# nuxt.js build output
 .nuxt
-dist/
+
+# vuepress build output
+.vuepress/dist
 
 # Storybook build outputs
 .out
 .storybook-out
 
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
 # Temporary folders
 tmp/
 temp/
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 
 # Local database
 *.sqlite

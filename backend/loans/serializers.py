@@ -16,3 +16,10 @@ class LoanSerializer(serializers.ModelSerializer):
         if data.get('book') and data['book'].available_copies < 1:
             raise serializers.ValidationError("Book is not available for loan")
         return data
+
+    def create(self, validated_data):
+        # Decrease available copies when creating a loan
+        book = validated_data['book']
+        book.available_copies -= 1
+        book.save()
+        return super().create(validated_data)
