@@ -1,98 +1,62 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: library_postgres
-    environment:
-      POSTGRES_DB: library_db
-      POSTGRES_USER: library_user
-      POSTGRES_PASSWORD: library_pass
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U library_user -d library_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  redis:
-    image: redis:7-alpine
-    container_name: library_redis
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: .
     container_name: library_backend
-    environment:
-      - DEBUG=1
-      - DATABASE_URL=postgresql://library_user:library_pass@postgres:5432/library_db
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=your-secret-key-change-in-production
-      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-    volumes:
-      - ./backend:/app
-      - media_files:/app/media
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - JWT_SECRET_KEY=jwt-dev-secret-key-change-in-production
+      - DATABASE_URL=sqlite:///./db.sqlite3
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: >
-      sh -c "python manage.py migrate --noinput || echo 'Migration warning ignored' &&
-             python manage.py collectstatic --noinput || echo 'Static files warning ignored' &&
-             python manage.py runserver 0.0.0.0:8000"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - db
+    networks:
+      - library_network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: library_frontend
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000
-      - REACT_APP_ENVIRONMENT=development
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
-    volumes:
-      - ./frontend:/app
-      - frontend_modules:/app/node_modules
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
     depends_on:
       - backend
-    stdin_open: true
-    tty: true
-    command: >
-      sh -c "npm install --legacy-peer-deps || echo 'npm install completed with warnings' &&
-             npm start"
+    networks:
+      - library_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: library_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=library_db
+      - POSTGRES_USER=library_user
+      - POSTGRES_PASSWORD=library_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - library_network
 
 volumes:
   postgres_data:
-    driver: local
-  media_files:
-    driver: local
-  frontend_modules:
-    driver: local
 
 networks:
-  default:
-    name: library_network
+  library_network:
+    driver: bridge

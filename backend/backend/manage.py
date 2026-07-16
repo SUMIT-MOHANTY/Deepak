@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+
 
 def main():
     """Run administrative tasks."""
@@ -13,18 +15,8 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+    execute_from_command_line(sys.argv)
 
-    # Handle database creation gracefully
-    if len(sys.argv) > 1 and sys.argv[1] == 'migrate':
-        print("Running database migrations...")
-        try:
-            execute_from_command_line(sys.argv)
-            print(" Database migrations completed successfully")
-        except Exception as e:
-            print(f"  Migration warning: {e}")
-            print("This is normal for initial setup")
-    else:
-        execute_from_command_line(sys.argv)
 
 if __name__ == '__main__':
     main()
