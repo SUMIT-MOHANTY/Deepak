@@ -67,4 +67,3 @@ A comprehensive library management system built with Django REST Framework backe
 ### Using Docker (Recommended)
 
 1. **Clone the repository**
-echo 'Fix completed successfully'
