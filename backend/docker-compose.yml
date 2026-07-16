@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  django-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: library_django
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - sqlite_data:/app/db
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=sqlite:///db/library.db
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+
+  db:
+    image: sqlite3:latest
+    container_name: library_db
+    volumes:
+      - sqlite_data:/var/lib/sqlite
+    environment:
+      - SQLITE_DATABASE=library.db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: library_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - django-backend
+
+volumes:
+  sqlite_data:
+    driver: local
+
+networks:
+  default:
+    name: library_network
