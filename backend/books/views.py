@@ -5,18 +5,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from .models import Book
 from .serializers import BookSerializer
-
-
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchBackend, filters.OrderingFilter]
+serializer = BookSerializer(books, many=True)
     filterset_fields = ['author', 'available_copies']
     search_fields = ['title', 'author', 'isbn']
     ordering_fields = ['title', 'author', 'publication_date']
     ordering = ['title']
-
     @action(detail=False, methods=['get'])
     def available(self, request):
         """Get books with available copies"""
